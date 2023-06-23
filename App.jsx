@@ -26,7 +26,8 @@ export default function App() {
                 ...doc.data(),
                 id: doc.id
             }))
-            setNotes(notesArr)
+            const sortedNotes = notesArr.sort((a, b) => b.updatedAt - a.updatedAt);
+            setNotes(sortedNotes);
         })
         return unsubscribe
     }, [])
@@ -39,7 +40,9 @@ export default function App() {
 
     async function createNewNote() {
         const newNote = {
-            body: "# Type your markdown note's title here"
+            body: "# Type your markdown note's title here",
+            createdAt: Date.now(),
+            updatedAt: Date.now()
         }
         const newNoteRef = await addDoc(notesCollection, newNote)
         setCurrentNoteId(newNoteRef.id)
@@ -47,7 +50,14 @@ export default function App() {
 
     async function updateNote(text) {
         const docRef = doc(db, "notes", currentNoteId)
-        await setDoc(docRef, { body: text }, { merge: true })
+        console.log(notes)
+        await setDoc(
+            docRef, 
+            { 
+                body: text, 
+                updatedAt: Date.now() 
+            },
+            { merge: true })
     }
 
     async function deleteNote(noteId) {
