@@ -21,7 +21,7 @@ export default function App() {
 
     React.useEffect(() => {
         const unsubscribe = onSnapshot(notesCollection, function (snapshot) {
-            // Sync up our local notes array with the snapshot data
+            
             const notesArr = snapshot.docs.map(doc => ({
                 ...doc.data(),
                 id: doc.id
