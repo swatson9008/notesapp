@@ -18,6 +18,14 @@ export default function App() {
     const currentNote =
         notes.find(note => note.id === currentNoteId)
         || notes[0]
+    
+    const [tempNoteText, setTempNoteText] = React.useState([]);
+
+    React.useEffect(() => {
+        if (currentNote) {
+          setTempNoteText(currentNote.body);
+        }
+      }, [currentNote]);
 
     React.useEffect(() => {
         const unsubscribe = onSnapshot(notesCollection, function (snapshot) {
@@ -37,6 +45,13 @@ export default function App() {
             setCurrentNoteId(notes[0]?.id)
         }
     }, [notes])
+
+    React.useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            updateNote(tempNoteText)
+        }, 500)
+        return () => clearTimeout(timeoutId)
+    }, [tempNoteText])
 
     async function createNewNote() {
         const newNote = {
@@ -83,8 +98,8 @@ export default function App() {
                             deleteNote={deleteNote}
                         />
                         <Editor
-                            currentNote={currentNote}
-                            updateNote={updateNote}
+                            tempNoteText={tempNoteText}
+                            setTempNoteText={setTempNoteText}
                         />
                     </Split>
                     :
